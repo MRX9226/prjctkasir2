@@ -16,14 +16,35 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
 
+      - name: Bikin project Flutter baru di folder kosong
+        run: flutter create --project-name kasir_app --org com.kasirku fresh_project
+
+      - name: Pindahkan kode kita ke project baru
+        run: |
+          mkdir -p fresh_project/lib/models
+          mkdir -p fresh_project/lib/data
+          mkdir -p fresh_project/lib/state
+          mkdir -p fresh_project/lib/widgets
+          mkdir -p fresh_project/lib/screens
+          rm -f fresh_project/lib/main.dart
+          cp lib/main.dart fresh_project/lib/main.dart
+          cp lib/models/product.dart fresh_project/lib/models/product.dart
+          cp lib/data/products.dart fresh_project/lib/data/products.dart
+          cp lib/state/cart.dart fresh_project/lib/state/cart.dart
+          cp lib/widgets/product_card.dart fresh_project/lib/widgets/product_card.dart
+          cp lib/widgets/cart_bar.dart fresh_project/lib/widgets/cart_bar.dart
+          cp lib/screens/kasir_screen.dart fresh_project/lib/screens/kasir_screen.dart
+
       - name: Ambil dependencies
+        working-directory: fresh_project
         run: flutter pub get
 
       - name: Build APK
+        working-directory: fresh_project
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: kasir-app-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: fresh_project/build/app/outputs/flutter-apk/app-release.apk
